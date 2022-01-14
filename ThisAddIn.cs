@@ -7,11 +7,15 @@ using Outlook = Microsoft.Office.Interop.Outlook;
 using Office = Microsoft.Office.Core;
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
+using Microsoft.Office.Interop.Outlook;
 
 namespace MeetingLinkFinder {
     public partial class ThisAddIn {
 
+        public String foundMeeting = "";
+
         Outlook.Explorer explorer = null;
+        Ribbon1 ribbon = null;
 
         private void ThisAddIn_Startup(object sender, System.EventArgs e) {
             //get the explorer and then register the selection change event.
@@ -25,11 +29,20 @@ namespace MeetingLinkFinder {
         }
 
         private void SelectionChange_Event() {
-            Outlook.Explorer activeExplorer = this.Application.ActiveExplorer();
 
-            Outlook.MAPIFolder selectedFolder = activeExplorer.CurrentFolder;
-            String expMessage = "Your current folder is " + selectedFolder.Name + ".\n";
-            String itemMessage = "Item is unknown.";
+            String foundURLs = FindMeetingURLs();
+            
+            ribbon.refreshRibbon();
+
+            if (foundURLs != null && ribbon != null) {
+                ribbon.show();
+            } else if (foundURLs == null && ribbon != null) {
+                ribbon.hide();
+            }
+        }
+
+        public String FindMeetingURLs() {
+            Outlook.Explorer activeExplorer = this.Application.ActiveExplorer();
 
             try {
                 if (activeExplorer.Selection.Count > 0 && activeExplorer.Selection[1] is Outlook.AppointmentItem) {
@@ -53,17 +66,29 @@ namespace MeetingLinkFinder {
                     }
 
                 foundURL:
-                    if (rawFoundURL != "") {
-                        //todo: show button
-                    } else {
-                        //todo: hide button
+                    if (rawFoundURL == "") {
+                        return null;
                     }
 
+                    bool validURL = true;
+
+                    //TODO: url checking
+
+                    return validURL ? rawFoundURL : null;
+
                 }
-            } catch (Exception ex) {
+            } catch (System.Exception ex) {
                 Console.Error.WriteLine(ex.Message);
                 MessageBox.Show(ex.Message);
+                return null;
             }
+            return null;
+        }
+
+        // generated code for ribbon element
+        protected override Microsoft.Office.Core.IRibbonExtensibility CreateRibbonExtensibilityObject() {
+            ribbon = new Ribbon1(this);
+            return ribbon;
         }
 
         #region VSTO generated code
