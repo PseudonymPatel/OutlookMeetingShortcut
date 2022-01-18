@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<customUI xmlns="http://schemas.microsoft.com/office/2009/07/customui" onLoad="Ribbon_Load">
+<customUI xmlns="http://schemas.microsoft.com/office/2009/07/customui" onLoad="Ribbon_Load" loadImage="GetImage">
   <ribbon>
     <tabs>
-      <tab idMso="TabAppointment">
-        <group id="MyGroup" label="My Group" getVisible="IsVisibleCallback">
+      <tab idMso="TabAddIns">
+        <group id="MyGroup" label="Open Appointment" getVisible="IsVisibleCallback">
 			<button id="openMeetingButton" label="Open Meeting"
              screentip="Meeting" onAction="OnOpenMeeting"
              supertip="Opens the meeting found in the appointment's body."/>

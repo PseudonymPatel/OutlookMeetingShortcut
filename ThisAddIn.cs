@@ -42,6 +42,10 @@ namespace MeetingLinkFinder {
         }
 
         public String FindMeetingURLs() {
+            return FindMeetingURLs(out _);
+        }
+        public String FindMeetingURLs(out String pass) {
+            pass = null;
             Outlook.Explorer activeExplorer = this.Application.ActiveExplorer();
 
             try {
@@ -60,6 +64,12 @@ namespace MeetingLinkFinder {
                         foreach (String domain in meetingAppliationDomains) {
                             if (item.Value.Contains(domain)) {
                                 rawFoundURL = item.Value;
+
+                                if (rawFoundURL.Contains("zoom")) {
+                                    if (appointementBody.ToLower().Contains("pass")) {
+                                        pass = appointementBody.Replace(rawFoundURL, "");
+                                    }
+                                }
                                 goto foundURL;
                             }
                         }
@@ -74,6 +84,7 @@ namespace MeetingLinkFinder {
 
                     //TODO: url checking
 
+                    
                     return validURL ? rawFoundURL : null;
 
                 }

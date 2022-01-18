@@ -1,5 +1,7 @@
-﻿using System;
+﻿using stdole;
+using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -63,10 +65,14 @@ namespace MeetingLinkFinder {
         }
 
         public void OnOpenMeeting(Office.IRibbonControl control) {
-            String meetingURL = addIn.FindMeetingURLs();
+            String zoomPass;
+            String meetingURL = addIn.FindMeetingURLs(out zoomPass);
 
             if (meetingURL != null) {
-                MessageBox.Show(meetingURL);
+                System.Diagnostics.Process.Start(meetingURL);
+                if (zoomPass != null && zoomPass != "") {
+                    MessageBox.Show(zoomPass);
+                }
             } else {
                 MessageBox.Show("No meeting found :(");
             }
@@ -74,6 +80,14 @@ namespace MeetingLinkFinder {
 
         public bool IsVisibleCallback(Office.IRibbonControl control) {
             return buttonVisibility;
+        }
+
+        public IPictureDisp GetImage(String url) {
+
+            //todo: actually get the proper url?
+
+            Image image = Image.FromFile(@"C:\Users\sheen\OneDrive - University of Toronto\Documents\source\MeetingLinkFinder\open.png");
+            return AxHostConverter.ImageToPictureDisp(image);
         }
 
 
@@ -103,5 +117,19 @@ namespace MeetingLinkFinder {
         }
 
         #endregion
+
+        internal class AxHostConverter : AxHost {
+
+            private AxHostConverter() : base("") { }
+
+            static public stdole.IPictureDisp ImageToPictureDisp(Image image) {
+                return (stdole.IPictureDisp)GetIPictureDispFromPicture(image);
+            }
+
+            static public Image PictureDispToImage(stdole.IPictureDisp pictureDisp) {
+                return GetPictureFromIPicture(pictureDisp);
+            }
+
+        }
     }
 }
