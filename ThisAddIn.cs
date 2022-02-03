@@ -90,7 +90,7 @@ namespace MeetingLinkFinder {
                 }
             } catch (System.Exception ex) {
                 Console.Error.WriteLine(ex.Message);
-                MessageBox.Show(ex.Message);
+                //MessageBox.Show(ex.Message);
                 return null;
             }
             return null;
